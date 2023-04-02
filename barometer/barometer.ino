@@ -22,7 +22,8 @@ Adafruit_BMP280 bmp;
 Adafruit_Sensor *bmp_pressure = bmp.getPressureSensor();
 
 int tapSensorPin = 1;
-volatile bool tapped = false;
+volatile unsigned int taps = 0;
+volatile unsigned lastTap = 0;
 
 void setup() {
   attachInterrupt(digitalPinToInterrupt(tapSensorPin), tap, RISING);
@@ -39,14 +40,19 @@ void setup() {
 }
 
 void tap() {
-  tapped = true;
+  lastTap = millis();
+  taps++;
 }
 
 unsigned long lasttime = 0;
 void loop() {
-  if (tapped) {
+  if ((taps == 1) && (millis() - lastTap > 5000)) {
+    taps = 0;
+  }
+  if (taps >= 2) {
+    delay(250);
     calibrate();
-    tapped = false;
+    taps = 0;
   }
   stepper.update();
 
