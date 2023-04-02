@@ -23,7 +23,7 @@ Adafruit_Sensor *bmp_pressure = bmp.getPressureSensor();
 
 int tapSensorPin = 1;
 volatile unsigned int taps = 0;
-volatile unsigned lastTap = 0;
+volatile unsigned long lastTap = 0;
 
 void setup() {
   attachInterrupt(digitalPinToInterrupt(tapSensorPin), tap, RISING);
@@ -36,6 +36,7 @@ void setup() {
                 Adafruit_BMP280::SAMPLING_X16,    /* Pressure oversampling */
                 Adafruit_BMP280::FILTER_X16,      /* Filtering. */
                 Adafruit_BMP280::STANDBY_MS_500); /* Standby time. */
+  delay(500);
   calibrate();
 }
 
